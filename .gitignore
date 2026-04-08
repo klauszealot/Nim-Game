@@ -1,0 +1,10 @@
+node_modules/
+.venv/
+build/
+dist/
+*.exe
+*.log
+eb_err.txt
+ai_engine.spec
+Stitch/
+Music/

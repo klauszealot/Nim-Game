@@ -1,0 +1,55 @@
+{
+  "name": "nim-game",
+  "version": "3.0.0",
+  "description": "Nim Game dengan AI (Algoritma Minimax & Alpha-Beta Pruning)",
+  "main": "main.js",
+  "author": "Nadia Janeeta Adha, Diandra Adilah Akbar, Achsan Khuluqi",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.quantumnim.os",
+    "productName": "Nim Game",
+    "files": [
+      "index.html",
+      "style.css",
+      "script.js",
+      "main.js",
+      "preload.js",
+      "ai_engine.py",
+      "Music/**/*",
+      "icons/**/*"
+    ],
+    "extraResources": [
+      "ai_engine.exe"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icons/win/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Nim Game"
+    }
+  },
+  "devDependencies": {
+    "electron": "^35.1.2",
+    "electron-builder": "^25.1.8",
+    "electron-icon-builder": "^2.0.1"
+  }
+}

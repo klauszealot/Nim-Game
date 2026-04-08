@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nim Game</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#8aebff",
+            secondary: "#ffb783",
+            background: "#0b1326",
+            surface: "#131b2e",
+            "surface-high": "#222a3d",
+            "surface-highest": "#2d3449",
+            outline: "#3c494c",
+            text: "#dae2fd",
+            muted: "#bbc9cd"
+          },
+          fontFamily: {
+            headline: ["Space Grotesk", "sans-serif"],
+            body: ["Inter", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-background text-text font-body min-h-screen selection:bg-primary/30 selection:text-primary">
+  <div class="fixed inset-0 bg-grid-pattern pointer-events-none"></div>
+  <div class="fixed -top-24 -left-24 w-96 h-96 rounded-full bg-primary/10 blur-[120px] pointer-events-none"></div>
+  <div class="fixed -bottom-24 -right-24 w-96 h-96 rounded-full bg-secondary/10 blur-[120px] pointer-events-none"></div>
+
+  <header class="glass fixed top-0 inset-x-0 z-40 border-b border-cyan-500/15">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
+      <div class="font-headline font-bold tracking-[0.18em] text-primary text-sm md:text-lg">NIM GAME</div>
+      <div class="flex items-center gap-3">
+        <label for="song-select" class="hidden md:block font-mono text-[10px] tracking-[0.12em] text-primary/70">SONG</label>
+        <select id="song-select" class="hidden md:block w-[20rem] bg-transparent border border-white/10 text-primary font-mono text-[11px] rounded-md px-2 py-1">
+          <option value="0">Gorillaz - Tranz (8-bit)</option>
+        </select>
+        <label for="header-volume-slider" class="font-mono text-[10px] tracking-[0.12em] text-primary/80">VOLUME</label>
+        <input id="header-volume-slider" type="range" min="0" max="100" value="65" class="w-24 md:w-36 accent-primary">
+        <span id="header-volume-label" class="font-mono text-[11px] text-primary">65%</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="pt-20 pb-10 px-4 md:px-8 max-w-7xl mx-auto relative z-10">
+    <section id="screen-landing" class="screen">
+      <div class="min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center text-center gap-10">
+        <div>
+          <p class="font-mono text-xs text-primary/75 tracking-[0.25em] mb-3">v3.0.0 // READY</p>
+          <h1 class="font-headline text-5xl md:text-8xl font-bold tracking-tight">
+            <span class="text-primary text-glow-cyan">NIM</span>
+            <span class="bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text"> GAME</span>
+          </h1>
+          <p class="mt-5 max-w-2xl text-muted text-sm md:text-lg">
+            Nadia Janeeta Adha ・ Diandra Adilah Akbar ・ Achsan Khuluqi
+          </p>
+        </div>
+        <button id="btn-start" class="btn-start">START</button>
+      </div>
+    </section>
+
+    <section id="screen-settings" class="screen hidden">
+      <div class="mb-8">
+        <h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight">GATEWAY & SETTINGS</h2>
+        <p class="font-mono text-xs text-muted tracking-[0.15em] mt-2">STABILIZING QUANTUM FIELD...</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <button class="mode-card mode-active" data-mode="pve">
+          <span class="material-symbols-outlined text-4xl text-primary mb-3">smart_toy</span>
+          <span class="font-headline text-lg">Player vs COM</span>
+          <span class="font-mono text-[11px] text-muted mt-2">Player melawan AI</span>
+        </button>
+        <button class="mode-card" data-mode="pvp">
+          <span class="material-symbols-outlined text-4xl text-primary mb-3">group</span>
+          <span class="font-headline text-lg">Player vs Player</span>
+          <span class="font-mono text-[11px] text-muted mt-2">Player melawan Player</span>
+        </button>
+        <button class="mode-card" data-mode="aivai">
+          <span class="material-symbols-outlined text-4xl text-secondary mb-3">visibility</span>
+          <span class="font-headline text-lg text-secondary">COM vs COM</span>
+          <span class="font-mono text-[11px] text-muted mt-2">AI melawan AI</span>
+        </button>
+      </div>
+
+      <div class="glass rounded-xl p-5 md:p-8 border border-white/10 space-y-8">
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <label class="font-headline text-lg">AI Difficulty</label>
+            <span id="difficulty-label" class="font-mono text-xs text-primary">EXPERT</span>
+          </div>
+          <div class="segmented">
+            <button class="seg-btn" data-difficulty="easy">EASY</button>
+            <button class="seg-btn seg-active" data-difficulty="normal">NORMAL</button>
+            <button class="seg-btn" data-difficulty="hard">HARD</button>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <label for="initial-count" class="font-headline text-lg">Initial Count</label>
+            <span id="initial-count-label" class="font-mono text-primary">12</span>
+          </div>
+          <input id="initial-count" type="range" min="3" max="60" value="12" class="w-full accent-primary">
+        </div>
+
+        <div class="flex justify-end">
+          <button id="btn-go-config" class="btn-primary">NEXT</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-6 mt-6">
+        <div class="glass rounded-xl p-5 border border-white/10">
+          <p class="font-headline text-xs tracking-[0.15em] text-muted mb-4">NIM GAME RULES</p>
+          <div class="space-y-2 font-mono text-xs text-muted">
+            <p>- Ambil 1-3 sel (jika sisa <= 30), atau 1-6 sel (jika sisa > 30).</p>
+            <p>- Player bergantian mengambil cell dari 1 tumpukan.</p>
+            <p>- Player yang mengambil cell terakhir akan kalah.</p>
+            <p>- Strategi kunci: posisi aman berada pada n % 4 = 0.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-config" class="screen hidden">
+      <div class="mb-8">
+        <h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight">SYNCING NEURAL INTERFACE</h2>
+        <p class="font-mono text-xs text-muted tracking-[0.15em] mt-2">ESTABLISHING QUANTUM ENTANGLEMENT...</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <aside class="glass rounded-xl p-5 border border-white/10 lg:col-span-4">
+          <p class="font-headline text-xs tracking-[0.15em] text-muted mb-4">CORE TELEMETRY</p>
+          <div class="space-y-3 font-mono text-xs">
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-muted">MODE</span><span id="telemetry-mode" class="text-primary">PVE</span></div>
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-muted">AI</span><span id="telemetry-ai" class="text-primary">EXPERT</span></div>
+            <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-muted">INITIAL</span><span id="telemetry-init" class="text-primary">12</span></div>
+            <div class="flex justify-between"><span class="text-muted">SONIC</span><span id="telemetry-volume" class="text-secondary">65%</span></div>
+          </div>
+        </aside>
+        <div class="glass rounded-xl p-6 md:p-8 border border-white/10 lg:col-span-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="p1-input" class="font-headline text-xs tracking-[0.15em] text-primary">Nama Player 1</label>
+              <input id="p1-input" maxlength="16" placeholder="Masukkan Nama Anda" class="terminal-input mt-2 w-full">
+            </div>
+            <div id="p2-wrap">
+              <label for="p2-input" class="font-headline text-xs tracking-[0.15em] text-secondary">Nama Player 2</label>
+              <input id="p2-input" maxlength="16" placeholder="Masukkan Nama Anda" class="terminal-input mt-2 w-full">
+            </div>
+          </div>
+          <button id="btn-initialize" class="btn-primary w-full mt-10">Start Game</button>
+          <button id="btn-back-settings" class="w-full py-3 mt-3 rounded-lg border border-white/15 hover:border-primary/50 transition-all font-headline tracking-[0.12em]">RETURN</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-game" class="screen hidden">
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+        <div class="xl:col-span-9 glass rounded-xl p-5 md:p-7 border border-white/10">
+          <div class="flex items-center justify-between gap-3 mb-5">
+            <div>
+              <p id="current-turn" class="font-headline text-xl text-primary">TURN: PLAYER 1</p>
+              <p id="game-subtitle" class="font-mono text-xs text-muted">Take cells based on remaining limit. Taking the final cell loses.</p>
+            </div>
+            <div class="text-right">
+              <button id="btn-pause" class="mb-2 px-3 py-1 rounded-lg border border-white/15 hover:border-primary/50 text-xs font-mono">PAUSE</button>
+              <p class="font-mono text-xs text-muted">REMAINING</p>
+              <p id="cells-left" class="font-headline text-3xl">12</p>
+            </div>
+          </div>
+          <div id="piles-area" class="mb-6"></div>
+          <div id="move-buttons" class="flex gap-3 flex-wrap"></div>
+        </div>
+
+        <aside class="xl:col-span-3 space-y-6">
+          <div class="glass rounded-xl p-5 border border-white/10">
+            <p class="font-headline text-xs tracking-[0.15em] text-muted mb-4">TECHNICAL READOUT</p>
+            <div class="space-y-3 font-mono text-xs">
+              <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-muted">P1</span><span id="hud-p1" class="text-primary">PLAYER 1</span></div>
+              <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-muted">P2</span><span id="hud-p2" class="text-secondary">AI</span></div>
+              <div class="flex justify-between border-b border-white/10 pb-2"><span class="text-muted">MODE</span><span id="hud-mode">PVE</span></div>
+              <div class="flex justify-between"><span class="text-muted">MOVES</span><span id="hud-moves" class="text-primary">0</span></div>
+            </div>
+          </div>
+
+          <div class="glass rounded-xl p-5 border border-white/10">
+            <p class="font-headline text-xs tracking-[0.15em] text-muted mb-4">ACTION LOG</p>
+            <div id="action-log" class="h-48 overflow-y-auto font-mono text-xs space-y-2 pr-1"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal-result" class="fixed inset-0 hidden items-center justify-center p-4 bg-[#0b1326]/80 backdrop-blur-sm z-50">
+    <div class="glass rounded-2xl border border-white/10 w-full max-w-md p-8 text-center">
+      <h3 id="result-title" class="font-headline text-3xl mb-2">RESULT</h3>
+      <p id="result-sub" class="font-mono text-xs text-muted mb-6">Sequence complete.</p>
+      <div class="grid grid-cols-2 gap-3 text-left font-mono text-xs mb-6">
+        <div class="glass p-3 rounded-lg border border-white/10"><span class="text-muted block mb-1">Initial</span><span id="r-init" class="text-primary">12</span></div>
+        <div class="glass p-3 rounded-lg border border-white/10"><span class="text-muted block mb-1">Moves</span><span id="r-moves" class="text-primary">0</span></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 text-left font-mono text-[11px] mb-6">
+        <div class="glass p-3 rounded-lg border border-white/10">
+          <span class="text-primary block mb-2">MINIMAX</span>
+          <div class="flex justify-between"><span class="text-muted">T</span><span id="r-mm-time">-</span></div>
+          <div class="flex justify-between"><span class="text-muted">N</span><span id="r-mm-nodes">-</span></div>
+          <div class="flex justify-between"><span class="text-muted">D</span><span id="r-mm-depth">-</span></div>
+        </div>
+        <div class="glass p-3 rounded-lg border border-white/10">
+          <span class="text-secondary block mb-2">ALPHA-BETA</span>
+          <div class="flex justify-between"><span class="text-muted">T</span><span id="r-ab-time">-</span></div>
+          <div class="flex justify-between"><span class="text-muted">N</span><span id="r-ab-nodes">-</span></div>
+          <div class="flex justify-between"><span class="text-muted">D</span><span id="r-ab-depth">-</span></div>
+        </div>
+      </div>
+      <button id="btn-restart" class="btn-primary w-full mb-3">PLAY AGAIN</button>
+      <button id="btn-home" class="w-full py-3 rounded-lg border border-white/15 hover:border-primary/50 transition-all font-headline tracking-[0.12em]">RETURN HOME</button>
+    </div>
+  </div>
+
+  <div id="modal-pause" class="fixed inset-0 hidden items-center justify-center p-4 bg-[#0b1326]/80 backdrop-blur-sm z-50">
+    <div class="glass rounded-2xl border border-white/10 w-full max-w-md p-8 text-center">
+      <h3 class="font-headline text-3xl mb-2">GAME PAUSED</h3>
+      <p class="font-mono text-xs text-muted mb-6">Statistik permainan saat ini</p>
+      <div class="grid grid-cols-2 gap-3 text-left font-mono text-xs mb-6">
+        <div class="glass p-3 rounded-lg border border-white/10"><span class="text-muted block mb-1">Remaining</span><span id="pause-cells" class="text-primary">-</span></div>
+        <div class="glass p-3 rounded-lg border border-white/10"><span class="text-muted block mb-1">Moves</span><span id="pause-moves" class="text-primary">-</span></div>
+        <div class="glass p-3 rounded-lg border border-white/10"><span class="text-muted block mb-1">Mode</span><span id="pause-mode">-</span></div>
+        <div class="glass p-3 rounded-lg border border-white/10"><span class="text-muted block mb-1">Turn</span><span id="pause-turn">-</span></div>
+      </div>
+      <button id="btn-resume-modal" class="btn-primary w-full mb-3">RESUME</button>
+      <button id="btn-home-modal" class="w-full py-3 rounded-lg border border-white/15 hover:border-primary/50 transition-all font-headline tracking-[0.12em]">RETURN TO HOME</button>
+    </div>
+  </div>
+
+  <audio id="bgm" src="Music/Gorillaz - Tranz (8-bit).mp3" autoplay preload="auto"></audio>
+  <script src="script.js"></script>
+</body>
+</html>
