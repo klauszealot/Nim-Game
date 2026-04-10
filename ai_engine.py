@@ -5,9 +5,11 @@ import random
 
 EASY_MAX_DEPTH = 4
 
+# Membatasi opsi max mengambil 6 kalau cell masih banyak, dan hanya mengambil 3 kalau sudah sedikit.
 def get_max_take(sticks):
     return 6 if sticks > 30 else 3
 
+# Minimax dengan memoization yang akan menelusuri semua kemungkinan langkah secara rekursif.
 def run_minimax(sticks_left, maximizing_turn, depth, stats, cache):
     stats["nodes"] += 1
     stats["maxDepth"] = max(stats["maxDepth"], depth)
@@ -34,6 +36,7 @@ def run_minimax(sticks_left, maximizing_turn, depth, stats, cache):
     cache[key] = best
     return best
 
+# Minimax + Alpha-Beta pruning yang sebenarnya sama hasilnya tapi jauh lebih efisien karena percabangan yang buruk langsung dipangkas.
 def run_alpha_beta(sticks_left, maximizing_turn, alpha, beta, depth, stats, cache):
     stats["nodes"] += 1
     stats["maxDepth"] = max(stats["maxDepth"], depth)
@@ -65,6 +68,7 @@ def run_alpha_beta(sticks_left, maximizing_turn, alpha, beta, depth, stats, cach
     cache[key] = best
     return best
 
+# Algoritma untuk benchmarking (nodes, depth, dan execution time).
 def benchmark_algorithm(algorithm, sticks_left):
     stats = {"nodes": 0, "maxDepth": 0}
     cache = {}
@@ -92,7 +96,6 @@ def benchmark_algorithm(algorithm, sticks_left):
             best_moves.append(move)
             
     best_move = random.choice(best_moves) if best_moves else (legal[0] if legal else 1)
-    
     elapsed_ms = (time.perf_counter() - t0) * 1000.0
     
     return {
@@ -103,11 +106,13 @@ def benchmark_algorithm(algorithm, sticks_left):
         "elapsedMs": elapsed_ms
     }
 
+# Menjalankan kedua algoritma sekaligus dan mengembalikan hasil perbandingannya.
 def run_benchmark(sticks_left):
     minimax = benchmark_algorithm("minimax", sticks_left)
     alpha_beta = benchmark_algorithm("alphabeta", sticks_left)
     return {"minimax": minimax, "alphaBeta": alpha_beta}
 
+# Mode easy (Algoritma sengaja dibatasi depth-nya supaya AI tidak bermain secara optimal).
 def run_minimax_easy(sticks_left, maximizing_turn, depth, stats):
     stats["nodes"] += 1
     stats["maxDepth"] = max(stats["maxDepth"], depth)
@@ -126,6 +131,7 @@ def run_minimax_easy(sticks_left, maximizing_turn, depth, stats):
             best = min(best, score)
     return best
 
+# easy=minimax terbatas, normal=minimax penuh, hard=alpha-beta.
 def choose_ai_move(sticks_left, difficulty):
     if sticks_left <= 0:
         return {"bestMove": 1, "comparison": run_benchmark(sticks_left)}
@@ -158,6 +164,7 @@ def choose_ai_move(sticks_left, difficulty):
     else:  # hard
         return {"bestMove": comparison["alphaBeta"]["bestMove"], "comparison": comparison}
 
+# Membaca input JSON dari stdin, proses, lalu kembalikan hasil ke stdout.
 def main():
     try:
         input_data = sys.stdin.read()
